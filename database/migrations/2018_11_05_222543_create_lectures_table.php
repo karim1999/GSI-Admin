@@ -22,6 +22,7 @@ class CreateLecturesTable extends Migration
             $table->string('type_course');
             $table->integer('gender');
             $table->integer('num_students');
+            $table->string('img');
             $table->text('description');
             $table->string('start_date');
             $table->string('end_date');

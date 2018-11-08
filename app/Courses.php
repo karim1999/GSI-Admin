@@ -11,7 +11,7 @@ class Courses extends Model
     }
 
     public function jointUsers(){
-        return $this->belongsToMany('App\User',' joint_courses')
+        return $this->belongsToMany('App\User',' joint_courses');
     }
 
     public function lecture(){

@@ -11,10 +11,10 @@ class Comments extends Model
     }
 
     public function course(){
-        return $this->belongsTo('App\Courses')
+        return $this->belongsTo('App\Courses');
     }
 
     public function Lecture(){
-        return $this->belongsTo('App\Lectures')
+        return $this->belongsTo('App\Lectures');
     }
 }
