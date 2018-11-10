@@ -104,6 +104,17 @@ class UserController extends Controller
         });
         $grid->created_at('Created at');
         $grid->updated_at('Updated at');
+
+        $grid->filter(function($filter){
+            
+            // Remove the default id filter
+            $filter->disableIdFilter();
+        
+            // Add a column filter
+            $filter->like('name', 'Name');
+            $filter->like('email', 'Email');
+        
+        });
         return $grid;
     }
 
