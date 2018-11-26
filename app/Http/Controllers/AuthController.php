@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use Validator, Hash;
 
 class AuthController extends Controller
 {
@@ -11,10 +13,10 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['login']]);
+    // }
 
     /**
      * Get a JWT via given credentials.
@@ -30,6 +32,41 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function register(Request $request)
+    {
+        $credentials = $request->only('name', 'middleName', 'lastName','email', 'password', 'type', 'phone', 
+        'civiIDNumber', 'gender');
+        $rules = [
+            'name' => 'required|max:255',
+            'middleName' => 'required|max:255',
+            'lastName' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:6',
+            'type'=> 'required',
+            'phone' => 'required',
+            'civiIDNumber' => 'required',
+            'gender'=> 'required',
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            return response()->json(['type'=> 'validation', 'success'=> false, 'error'=> $validator->messages()],400);
+        }
+        $name = $request->name;
+        $middleName = $request->middleName;
+        $lastName = $request->lastName;
+        $email = $request->email;
+        $password = $request->password;
+        $type = $request->type;
+        $phone = $request->phone;
+        $civiIDNumber = $request->civiIDNumber;
+        $gender = $request->gender;
+        User::create(['name' => $name, 'middleName' => $middleName, 'lastName' => $lastName, 'email' => $email,
+         'password' => Hash::make($password), 'type' => $type, 'phone' => $phone,
+          'civiIDNumber' => $civiIDNumber, 'gender' => $gender]);
+        return $this->login($request);
+
     }
 
     /**
