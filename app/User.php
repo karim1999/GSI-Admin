@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'middleName', 'lastName', 'email', 'password', 'type', 'phone', 'civiIDNumber', 'gender',
+        'name', 'middleName', 'lastName', 'email', 'password', 'type', 'phone', 'civilIDNumber', 'gender',
     ];
 
     /**
@@ -62,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function jointLectures(){
-        return $this->belongsToMany('App\Lectures', 'App\joint-lectures');
+        return $this->belongsToMany('App\Lectures', 'joint_lectures')->withPivot(['amount']);
     }
 
     public function comments(){

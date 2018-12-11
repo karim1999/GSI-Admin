@@ -19,7 +19,7 @@ class CreateLecturesTable extends Migration
             $table->integer("course_id")->nullable();
             $table->string("title");
             $table->integer("price");
-            $table->string('type_course');
+            $table->integer('type_course');
             $table->integer('gender');
             $table->integer('num_students');
             $table->string('img');

@@ -30,3 +30,21 @@ Route::group([
     Route::post('me', 'AuthController@me');
 
 });
+
+Route::group([
+    'middleware' => 'jwt.auth',
+
+], function () {
+    //Lectures
+    Route::get('lectures', 'LecturesController@showLectures');
+    Route::post('jointLecture/{lecture}', 'LecturesController@jointLecture');
+    Route::post('addLecture', 'LecturesController@addLecture');
+    Route::post('editLecture/{lecture}', 'LecturesController@editLecture');
+    Route::delete('deleteLecture/{lecture}', 'LecturesController@deleteLecture');
+
+    Route::get('getusers', 'LecturesController@getUsers');
+
+});
+
+Route::get('lecturesDate', 'LecturesController@showLecturesByDate');
+Route::get('addlectureusers', 'LecturesController@addLectureUsers');

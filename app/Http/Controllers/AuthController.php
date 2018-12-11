@@ -37,7 +37,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $credentials = $request->only('name', 'middleName', 'lastName','email', 'password', 'type', 'phone', 
-        'civiIDNumber', 'gender');
+        'civilIDNumber', 'gender');
         $rules = [
             'name' => 'required|max:255',
             'middleName' => 'required|max:255',
@@ -46,7 +46,7 @@ class AuthController extends Controller
             'password' => 'required|min:6',
             'type'=> 'required',
             'phone' => 'required',
-            'civiIDNumber' => 'required',
+            'civilIDNumber' => 'required',
             'gender'=> 'required',
         ];
         $validator = Validator::make($credentials, $rules);
@@ -60,11 +60,11 @@ class AuthController extends Controller
         $password = $request->password;
         $type = $request->type;
         $phone = $request->phone;
-        $civiIDNumber = $request->civiIDNumber;
+        $civilIDNumber = $request->civilIDNumber;
         $gender = $request->gender;
         User::create(['name' => $name, 'middleName' => $middleName, 'lastName' => $lastName, 'email' => $email,
          'password' => Hash::make($password), 'type' => $type, 'phone' => $phone,
-          'civiIDNumber' => $civiIDNumber, 'gender' => $gender]);
+          'civilIDNumber' => $civilIDNumber, 'gender' => $gender]);
         return $this->login($request);
 
     }

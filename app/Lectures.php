@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lectures extends Model
 {
+    protected $with= ['user'];
+    
     public function user(){
         return $this->belongsTo('App\User');
     }
@@ -14,8 +16,8 @@ class Lectures extends Model
         return $this->belongsTo('App\Courses');
     }
 
-    public function JointUsers(){
-        return $this->belongsToMany('App\User', 'App\joint_lectures');
+    public function jointUsers(){
+        return $this->belongsToMany('App\User', 'joint_lectures')->withPivot(['amount']);
     }
 
     public function comments(){
