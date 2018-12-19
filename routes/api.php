@@ -48,3 +48,5 @@ Route::group([
 
 Route::get('lecturesDate', 'LecturesController@showLecturesByDate');
 Route::get('addlectureusers', 'LecturesController@addLectureUsers');
+Route::post('jointlectureusers/{lecture}/{user}', 'LecturesController@jointLectureUsers');
+

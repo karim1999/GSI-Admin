@@ -17,6 +17,7 @@ class CreateJointLecturesTable extends Migration
             $table->increments('id');
             $table->integer('user_id');
             $table->integer('lecture_id');
+            $table->integer('mount');
             $table->timestamps();
         });
     }

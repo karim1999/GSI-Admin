@@ -40,27 +40,28 @@ class LecturesController extends Controller
         $lecture->start_duration = $request->start_duration;
         $lecture->end_duration = $request->end_duration;
         $lecture->start_date = $request->start_date;
-        $lecture->end_date = $request->end_date;
 
         $result= auth()->user()->lecture()->save($lecture);
         return response()->json($result);
 
     }
 
+    public function jointLectureUsers(Lectures $lecture,User $user){
+        $user->jointLectures()->attach($lecture);
+        return $user;
+    }
+
     public function editLecture(Lectures $lecture, Request $request){
         $lecture->title = $request->title;
-        $lecture->img = $request->img;
         $lecture->subject = $request->subject;
         $lecture->price = $request->price;
         $lecture->type_course = $request->type_course;
         $lecture->gender = $request->gender;
         $lecture->allowed = $request->allowed;
-        $lecture->img = $request->img;
+        // $lecture->img = $request->img;
         $lecture->description = $request->description;
         $lecture->start_duration = $request->start_duration;
         $lecture->end_duration = $request->end_duration;
-        $lecture->start_date = $request->start_date;
-        $lecture->end_date = $request->end_date;
 
         auth()->user()->lecture()->save($lecture);
         return response()->json($lecture);
