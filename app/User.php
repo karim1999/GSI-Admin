@@ -72,4 +72,44 @@ class User extends Authenticatable implements JWTSubject
     public function wallet(){
         return $this->hasOne('App\Wallet');
     }
+
+    public static function send($tokens,$text)
+    {
+        $fields = array
+        (
+            "registration_ids" => $tokens,
+            "priority" => 10,
+            'data' => [
+                'text' => $text,
+            ],
+            'notification' => [
+                'text' => $text,
+            ],
+            'vibrate' => 1,
+            'sound' => 1
+        );
+        $headers = array
+        (
+            'accept: application/json',
+            'Content-Type: application/json',
+            'Authorization:key=
+            AAAAy7-Sztw:APA91bGMdCL_Gapq_S7B_bGYkaEwRJoRqZWBhSe9iquQ569cVlqC-hWLT2FWgnhhQho2mZRT1L9SUnK5gg5wXwksefaS1BbDdQQFCFWWxLOI66xRbroSd4Hin0b1DrmjggADVqJDgxPk'
+
+        );
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($ch);
+        //  var_dump($result);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+        curl_close($ch);
+
+        return $result;
+    }
 }

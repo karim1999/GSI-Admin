@@ -44,6 +44,10 @@ Route::group([
 
     Route::get('getusers', 'LecturesController@getUsers');
 
+    Route::post('updatetoken', 'AuthController@userToken');
+
+    Route::post('notification', 'LecturesController@notification');
+
 });
 
 Route::get('lecturesDate', 'LecturesController@showLecturesByDate');

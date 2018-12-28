@@ -116,4 +116,12 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
+
+    public function userToken(Request $request){
+        $user = auth()->user();
+        $user->token = $request->token;
+        $user->save();
+
+        return $user;
+    }
 }
