@@ -15,14 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//Payment Methods
-Route::any('payment-methods', 'PaymentMethodsController@anyIndex');
-Route::post('payment-methods/paid/{id}', 'PaymentMethodsController@anyPaid');
-//Online Payment
-Route::any('online-payment', 'OnlinePaymentController@anyIndex');
-Route::any('online-payment/success', 'OnlinePaymentController@getSuccess');
-Route::any('online-payment/error', 'OnlinePaymentController@getError');
-// Route::get('/buy', 'BuyController@buy');
-// Route::get('/response', 'BuyController@response');
-// Route::get('/error', 'BuyController@error');
-// Route::get('/result', 'BuyController@result');
+Route::get('payment/buy', 'OnlinePaymentController@buy')->name('payment.buy');
+Route::any('payment/response', 'OnlinePaymentController@response')->name('payment.response');
+Route::any('payment/success', 'OnlinePaymentController@success')->name('payment.success');
+Route::any('payment/error', 'OnlinePaymentController@error')->name('payment.error');

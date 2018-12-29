@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Http\Controllers;
-use ZipArchive;
 /*
  * e24PaymentPipe
  *
