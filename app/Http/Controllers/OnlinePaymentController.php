@@ -6,16 +6,16 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Components\KNet\OnlinePaymentIntegration;
+use App\JointLectures;
 
 class OnlinePaymentController extends Controller
 {
 
     public function buy(Request $request){
         $data= [
-            'user_id' => 1,
-            'amount' => 10,
-            'udf1'=> 1,
-            'udf2'=> 10,
+            'amount' => $request->amount,
+            'udf1'=> $request->user_id,
+            'udf2'=> $request->lectures_id,
             'udf3'=> 'udf3',
             'udf4'=> 'udf4',
             'udf5'=> 'udf5',
@@ -33,12 +33,17 @@ class OnlinePaymentController extends Controller
         $trackid = $request->trackid;
         $udf1 = $request->udf1;
         $udf2 = $request->udf2;
-        $udf3 = $request->udf3;
+        $udf3 = $request->amount;
         $udf4 = $request->udf4;
         $udf5 = $request->udf5;
         if ( $presult == "CAPTURED" && $PaymentID != "")
         {
-            //do something with the data
+            $joint = new JointLectures;
+            $joint->user_id = $request->udf1;
+            $joint->lectures_id = $request->udf2;
+            $joint->amount = $request->amount;
+    
+            $joint->save();
             return redirect()->route('payment.success');
         }else{
             return redirect()->route('payment.error');

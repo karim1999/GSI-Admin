@@ -87,9 +87,6 @@ class LectureController extends Controller
         $grid->user_id('Username')->display(function($userId) {
             return User::find($userId)->name;
         });
-        $grid->course_id('Course name')->display(function($courseId) {
-            return Courses::find($courseId)->title;
-        });
         $grid->title('Title');
         $grid->price('Price');
         $grid->type_course('Type course');
@@ -104,8 +101,8 @@ class LectureController extends Controller
         });
         $grid->num_students('Num students');
         $grid->description('Description');
-        $grid->start_date('Start date');
-        $grid->end_date('End date');
+        $grid->start_duration('Start duration');
+        $grid->end_duration('End duration');
 
         $grid->filter(function($filter){
             
@@ -153,8 +150,8 @@ class LectureController extends Controller
         });
         $show->num_students('Num students');
         $show->description('Description');
-        $show->start_date('Start date');
-        $show->end_date('End date');
+        $show->start_duration('Start duration');
+        $show->end_duration('End duration');
 
         return $show;
     }
@@ -178,8 +175,8 @@ class LectureController extends Controller
         $form->number('num_students', 'Num students');
         $form->image('img', 'Img');
         $form->textarea('description', 'Description');
-        $form->date('start_date', 'Start date');
-        $form->date('end_date', 'End date');
+        $form->datetime('start_duration', 'Start duration');
+        $form->datetime('end_duration', 'End duration');
 
         return $form;
     }
