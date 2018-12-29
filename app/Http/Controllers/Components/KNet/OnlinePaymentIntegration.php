@@ -27,11 +27,11 @@ class OnlinePaymentIntegration
         $Pipe->setAlias("global"); //set your alias name here
         $Pipe->setTrackId(rand(999999999, 2)); //generate the random number here
 
-        $Pipe->setUdf1($data['user_id']); //set User defined value
-        $Pipe->setUdf2($data['amount']); //set User defined value
-        $Pipe->setUdf3("UDF 3"); //set User defined value
-        $Pipe->setUdf4("UDF 4"); //set User defined value
-        $Pipe->setUdf5("UDF 5"); //set User defined value
+        $Pipe->setUdf1($data['udf1']); //set User defined value
+        $Pipe->setUdf2($data['udf2']); //set User defined value
+        $Pipe->setUdf3($data['udf3']); //set User defined value
+        $Pipe->setUdf4($data['udf4']); //set User defined value
+        $Pipe->setUdf5($data['udf5']); //set User defined value
 //get results
         if($Pipe->performPaymentInitialization() != $Pipe->SUCCESS){
             echo "Result=" . $Pipe->SUCCESS;

@@ -14,6 +14,11 @@ class OnlinePaymentController extends Controller
         $data= [
             'user_id' => 1,
             'amount' => 10,
+            'udf1'=> 1,
+            'udf2'=> 10,
+            'udf3'=> 'udf3',
+            'udf4'=> 'udf4',
+            'udf5'=> 'udf5',
         ];
         return OnlinePaymentIntegration::Buy($data);
     }
