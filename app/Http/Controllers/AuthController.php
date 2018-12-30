@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Validator, Hash;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -45,13 +46,13 @@ class AuthController extends Controller
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6',
             'type'=> 'required',
-            'phone' => 'required',
-            'civilIDNumber' => 'required',
+            'phone' => 'required|max:11|unique:users',
+            'civilIDNumber' => 'required|max:11',
             'gender'=> 'required',
         ];
         $validator = Validator::make($credentials, $rules);
         if($validator->fails()) {
-            return response()->json(['type'=> 'validation', 'success'=> false, 'error'=> $validator->messages()],400);
+            return response()->json(['type'=> 'validation', 'success'=> false, 'msg'=> $validator->messages()],400);
         }
         $name = $request->name;
         $middleName = $request->middleName;
@@ -123,5 +124,25 @@ class AuthController extends Controller
         $user->save();
 
         return $user;
+    }
+
+    public function recover(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            $error_message = "Your email address was not found.";
+            return response()->json(['success' => false, 'error' => ['email'=> [$error_message]]], 401);
+        }
+        try {
+            Password::sendResetLink($request->only('email'), function (Message $message) {
+                $message->subject('Your Password Reset Link');
+            });
+        } catch (\Exception $e) {
+            $error_message = $e->getMessage();
+            return response()->json(['success' => false, 'error' => $error_message], 401);
+        }
+        return response()->json([
+            'success' => true, 'data'=> ['message'=> 'A reset email has been sent! Please check your email.']
+        ]);
     }
 }

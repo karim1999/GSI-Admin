@@ -53,4 +53,5 @@ Route::group([
 Route::get('lecturesDate', 'LecturesController@showLecturesByDate');
 Route::get('addlectureusers', 'LecturesController@addLectureUsers');
 Route::post('jointlectureusers/{lecture}/{user}', 'LecturesController@jointLectureUsers');
+Route::post('/password/reset', 'AuthController@recover')->name('password.reset');
 
