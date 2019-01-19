@@ -24,17 +24,28 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+     public function login(Request $request)
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        if(is_numeric($request->email)){
 
-        return $this->respondWithToken($token);
+            $credentials = array('phone'=>$request->email,'password'=>$request->password);
+
+            if (! $token = auth()->attempt($credentials)) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            return $this->respondWithToken($token);          
+        }else{ 
+               
+            if (! $token = auth()->attempt($credentials)) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+            return $this->respondWithToken($token);          
+        }    
+
     }
-
+    
     public function register(Request $request)
     {
         $credentials = $request->only('name', 'middleName', 'lastName','email', 'password', 'type', 'phone', 
@@ -46,8 +57,8 @@ class AuthController extends Controller
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6',
             'type'=> 'required',
-            'phone' => 'required|max:11|unique:users',
-            'civilIDNumber' => 'required|max:11',
+            'phone' => 'required|unique:users',
+            'civilIDNumber' => 'required',
             'gender'=> 'required',
         ];
         $validator = Validator::make($credentials, $rules);
@@ -135,7 +146,8 @@ class AuthController extends Controller
         }
         try {
             Password::sendResetLink($request->only('email'), function (Message $message) {
-                $message->subject('Your Password Reset Link');
+                $message->subject('Your Password Reset Link')->action('Reset Password', url('password/reset', $this->token));
+                
             });
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
@@ -144,5 +156,75 @@ class AuthController extends Controller
         return response()->json([
             'success' => true, 'data'=> ['message'=> 'A reset email has been sent! Please check your email.']
         ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        $user->name = $request->name;
+        $user->middleName = $request->middleName;
+        $user->lastName = $request->lastName;
+        $user->gender = $request->gender;
+        if($request->email == $user->email){
+            $user->email = $request->email;
+        }else{
+            $validator = Validator::make($request->all(),[
+                'email' => 'email|max:255|unique:users'
+            ]);
+            if($validator->fails()) {
+                return response()->json(['type'=> 'validation', 'success'=> false, 'msg'=> $validator->messages()],400);
+            }
+        }
+        $user->email = $request->email;
+        if($request->phone == $user->phone){
+            $user->phone = $request->phone;
+        }else{
+            $validator = Validator::make($request->all(),[
+                'phone' => 'unique:users'
+            ]);
+            if($validator->fails()) {
+                return response()->json(['type'=> 'validation', 'success'=> false, 'msg'=> $validator->messages()],400);
+            }
+        }
+        $user->phone = $request->phone;
+        $user->civilIDNumber = $request->civilIDNumber;
+        $user->save();
+        return $user;
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = auth()->user();
+
+        /*
+        * Validate all input fields
+        */
+        // $this->validate($request, [
+        //     'password' => $user->password,
+        //     'new_password' => 'confirmed|max:8|different:password',
+        // ]);
+
+        if (Hash::check($request->oldPassword, $user->password)) {
+            $user->password = Hash::make($request->newPassword);
+            $user->save();
+            return 'success';
+
+        } else {
+            return 'error';
+        }
+
+    }
+    
+    public function privacy(){
+        return view('Privacy Policy of gsi - FreePrivacyPolicy');
+    }
+    
+    public function userImage(Request $request)
+    {
+        $user = auth()->user();
+        $user->img = $request->img;
+        $user->save();
+        
+        return response()->json(auth()->user()->load('lecture','jointLectures'));
     }
 }

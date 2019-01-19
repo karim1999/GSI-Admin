@@ -85,13 +85,10 @@ class CommentController extends Controller
         $grid = new Grid(new Comments);
 
         $grid->id('Id');
-        $grid->user_id('Username')->as(function($userId) {
+        $grid->user_id('Username')->display(function($userId) {
             return User::find($userId)->name;
         });
-        $grid->course_id('Course name')->as(function($courseId) {
-            return Courses::find($courseId)->title;
-        });
-        $grid->lecture_id('Lecture name')->as(function($lectureId) {
+        $grid->lectures_id('Lecture name')->display(function($lectureId) {
             return Lectures::find($lectureId)->title;
         });
         $grid->comment('Comment');
@@ -112,13 +109,13 @@ class CommentController extends Controller
         $show = new Show(Comments::findOrFail($id));
 
         $show->id('Id');
-        $show->user_id('User id');
-        $show->course_id('Course id');
-        $show->lecture_id('Lecture id');
+        $show->user_id('User name')->as(function($userId) {
+            return User::find($userId)->name;
+        });
+        $show->lectures_id('Lecture name')->as(function($lectureId) {
+            return Lectures::find($lectureId)->title;
+        });
         $show->comment('Comment');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
-
         return $show;
     }
 
@@ -132,7 +129,6 @@ class CommentController extends Controller
         $form = new Form(new Comments);
 
         $form->select("user_id", "Owner")->options(User::all()->pluck('name', 'id'));
-        $form->select("course_id", "Course")->options(Courses::all()->pluck('title', 'id'));
         $form->select("lecture_id", "Lecture")->options(Lectures::all()->pluck('title', 'id'));
         $form->textarea('comment', 'Comment');
 

@@ -19,3 +19,6 @@ Route::get('payment/buy', 'OnlinePaymentController@buy')->name('payment.buy');
 Route::any('payment/response', 'OnlinePaymentController@response')->name('payment.response');
 Route::any('payment/success', 'OnlinePaymentController@success')->name('payment.success');
 Route::any('payment/error', 'OnlinePaymentController@error')->name('payment.error');
+Route::get('export', 'LecturesController@export');
+
+Route::get('/users', 'AuthController@users');

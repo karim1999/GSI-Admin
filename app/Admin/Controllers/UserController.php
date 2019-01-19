@@ -87,23 +87,22 @@ class UserController extends Controller
         $grid->name('Name');
         $grid->email('Email');
         $grid->type('Type')->display(function ($type) {
-            if($type == 0){
+            if($type == 1){
                 return "<span class='label label-warning'>Student</span>";
             }else{
                 return "<span class='label label-warning'>Teacher</span>";
             }
         });
-        $grid->img('Img');
+        $grid->img('Image');
         $grid->phone('Phone');
         $grid->gender('Gender')->display(function ($gender) {
-            if($gender == 0){
+            if($gender == 1){
                 return "<span class='label label-warning'>Male</span>";
             }else{
                 return "<span class='label label-warning'>Female</span>";
             }
         });
-        $grid->created_at('Created at');
-        $grid->updated_at('Updated at');
+        $grid->created_at('Created At');
 
         $grid->filter(function($filter){
             
@@ -132,7 +131,7 @@ class UserController extends Controller
         $show->name('Name');
         $show->email('Email');
         $show->type('Type')->as(function ($type) {
-            if($type == 0){
+            if($type == 1){
                 return "Student";
             }else{
                 return "Teacher";
@@ -140,7 +139,7 @@ class UserController extends Controller
         });
         $show->phone('Phone');
         $show->gender('Gender')->as(function ($gender) {
-            if($gender == 0){
+            if($gender == 1){
                 return "Male";
             }else{
                 return "Female";
@@ -158,16 +157,19 @@ class UserController extends Controller
     protected function form()
     {
         $form = new Form(new User);
-
+        
         $form->text('name', 'Name');
+        $form->text('middleName', 'Middle name');
+        $form->text('lastName', 'Last name');
+        $form->text('civilIDNumber', 'Civil id number');        
         $form->email('email', 'Email');
-        $form->password('password', 'Password');
-        $Type= Array(0 => "Student",1 => "Teacher");
-        $form->select("type")->options($Type)->rules('required');
-        $form->image('img', 'Img')->default('images/default.png');
-        $form->mobile("phone")->rules('required');
-        $Gender= Array(0 => "Male",1 => "Female");
-        $form->select("gender")->options($Gender)->rules('required');
+        $form->password('password', 'Passwrod');
+        $Type= Array(1 => "Stident",2 => "Teacher");
+        $form->select("type", "Type")->options($Type)->rules('required');
+        $form->image('img', 'Image')->default('images/default.png');
+        $form->mobile("phone", "Phone")->rules('required');
+        $Gender= Array(1 => "Male",2 => "Female");
+        $form->select("gender", "Gender")->options($Gender)->rules('required');
         $form->saving(function (Form $form) {
 
                 if($form->model()->password && $form->password == ""){

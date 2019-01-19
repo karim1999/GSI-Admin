@@ -15,5 +15,6 @@ Route::group([
     $router->resource('/courses', 'CourseController');
     $router->resource('/lectures', 'LectureController');
     $router->resource('/comments', 'CommentController');
+    $router->resource('/reports', 'JointLecturesController');    
 
 });

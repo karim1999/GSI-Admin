@@ -7,11 +7,14 @@ use App\Lectures;
 use App\Notification;
 use App\JointLectures;
 use App\User;
+use App\Comments;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
 use FCM;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\UsersExport;
 
 class LecturesController extends Controller
 {
@@ -25,19 +28,35 @@ class LecturesController extends Controller
 
     public function jointLecture(Lectures $lecture){
         auth()->user()->jointLectures()->attach($lecture);
-        return auth()->user()->jointLectures;
+        return response()->json(auth()->user()->load('jointLectures'));
+
+
+        // $joint = new JointLectures;
+        // $joint->user_id = auth()->user()->id;
+        // $joint->type = $request->type;
+        // $joint->lectures_id = $lectures;
+        // $joint->save();
+        // return $joint;
+    }
+    
+    public function unjoint(Lectures $lecture)
+    {
+        auth()->user()->jointLectures()->detach($lecture);
+        return response()->json(auth()->user()->load('jointLectures'));
     }
 
     public function addLecture(Request $request){
         $lecture = new Lectures;
         $lecture->title = $request->title;
-        $lecture->subject = $request->subject;
         $lecture->price = $request->price;
         $lecture->type_course = $request->type_course;
         $lecture->gender = $request->gender;
         $lecture->attendance = $request->attendance;
         $lecture->allowed = $request->allowed;
+        $lecture->payment = $request->payment;
 
+        $lecture->img = $request->img;
+        
         // $path = $request->file('img')->store('public/images');
         // $path= str_replace("public/","",$path);
         // $lecture->img= $path;
@@ -46,6 +65,9 @@ class LecturesController extends Controller
         $lecture->start_duration = $request->start_duration;
         $lecture->end_duration = $request->end_duration;
         $lecture->start_date = $request->start_date;
+        $lecture->end_date = $request->end_date;
+        $lecture->start_time = $request->start_time;
+        $lecture->end_time = $request->end_time;
 
         $result= auth()->user()->lecture()->save($lecture);
         return response()->json($result);
@@ -59,12 +81,11 @@ class LecturesController extends Controller
 
     public function editLecture(Lectures $lecture, Request $request){
         $lecture->title = $request->title;
-        $lecture->subject = $request->subject;
         $lecture->price = $request->price;
         $lecture->type_course = $request->type_course;
         $lecture->gender = $request->gender;
         $lecture->allowed = $request->allowed;
-        // $lecture->img = $request->img;
+        $lecture->img = $request->img;
         $lecture->description = $request->description;
         $lecture->start_duration = $request->start_duration;
         $lecture->end_duration = $request->end_duration;
@@ -125,14 +146,14 @@ class LecturesController extends Controller
         // }
         // return $date;
         
-        $balance = auth()->user()->balance;
-        return $balance;
+        // $balance = auth()->user()->balance;
+        // return $balance;
 
-        if($balance < 0 ){
+        // if($balance < 0 ){
 
-        }else{
+        // }else{
             
-        }
+        // }
 
         // $lecture = Lectures::all()->pluck('id');
         
@@ -181,5 +202,31 @@ class LecturesController extends Controller
         // return Array (key:token, value:errror) - in production you should remove from your database the tokens present in this array
         $downstreamResponse->tokensWithError();
 
+    }
+
+    public function comments(Request $request, $lectures)
+    {
+        $joint = auth()->user()->jointLectures;
+
+        if($joint){
+            $comments = new Comments;
+            $comments->comment = $request->comment;
+            $comments->rate = $request->rate;
+            $comments->lectures_id = $lectures;
+            auth()->user()->comments()->save($comments);
+            return $comments;
+        }else{
+            echo 'error';
+        }
+    }
+
+    public function showComments($lectures)
+    {
+        return Comments::where('lectures_id', $lectures)->get();
+    }
+
+    public function export() 
+    {
+        return Excel::download(new UsersExport, 'lectures.xlsx');
     }
 }

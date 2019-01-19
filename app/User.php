@@ -62,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function jointLectures(){
-        return $this->belongsToMany('App\Lectures', 'joint_lectures')->withPivot(['amount']);
+        return $this->belongsToMany('App\Lectures', 'joint_lectures')->withPivot(['amount', 'type']);
     }
 
     public function comments(){
