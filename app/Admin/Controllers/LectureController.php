@@ -105,6 +105,13 @@ class LectureController extends Controller
                 return "<span class='label label-warning'>Both</span>";
             }
         });
+        $grid->payment('Payment')->display(function ($payment) {
+            if($payment == 1){
+                return "<span class='label label-warning'>Before Attend</span>";
+            }else{
+                return "<span class='label label-warning'>After Attend</span>";
+            }
+        });
         $grid->allowed('Num students');
         $grid->description('Description');
         $grid->start_duration('Start duraton');
@@ -173,24 +180,28 @@ class LectureController extends Controller
     {
          $form = new Form(new Lectures);
 
-        $form->select("user_id", "User name")->options(User::where('type', 2)->pluck('name', 'id'));
-        $form->text('title', 'Title');
-        $form->number('price', 'Price');
+        $form->select("user_id", "User name")->options(User::where('type', 2)->pluck('name', 'id'))->rules('required');
+        $form->text('title', 'Title')->rules('required');
+        $form->number('price', 'Price')->rules('required');
         $Type= Array(1 => "College",2 => "General");        
         $form->select('type_course', 'Type course')->options($Type)->rules('required');
         $Gender= Array(1 => "Male",2 => "Female",3 => "Both");
         $form->select("gender")->options($Gender)->rules('required');
-        $form->number('num_students', 'Num students');
-        $form->image('img', 'Img');
+        $form->number('allowed', 'Num students');
+        $Payment= Array(1 => "Before Attend",2 => "After Attend");
+        $form->select("payment")->options($Payment)->rules('required');
+        $form->image('img', 'Img')->rules('required');
         $form->textarea('description', 'Description');
         $form->date('start_date');
         $form->date('end_date');
         $form->time('start_time');
         $form->time('end_time');
-        $column = $form->time('start_date').$form->time('end_time');
-        $column1 = $form->time('end_date').$form->time('end_time');
-        $form->hidden('start_duration', $column);
-        $form->hidden('end_duration', $column1);
+        
+        $form->saving(function (Form $form) {
+            $form->model()->start_duration = $form->start_date." ".$form->start_time;
+            $form->model()->end_duration = $form->end_date." ".$form->end_time;
+        });
+
 
         return $form;
     }

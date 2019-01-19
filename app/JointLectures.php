@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class JointLectures extends Model
 {
+        protected $appends = ['amount2'];
+        protected $with = ['amount2'];
+
     public function lecture(){
         return $this->belongsTo('App\Lectures');
     }
@@ -18,14 +21,17 @@ class JointLectures extends Model
     {
         return $this->hasMany('App\PaymentMethod', 'jointlecture_id');
     }
+    public function showamount()
+    {
+        return $this->hasMany('App\PaymentMethod', 'jointlecture_id');
+    }
     
-    // public function getAmountAttribute()
-    // {
-    //     if($this->showamount()->count() > 0){
-    //         return $this->showamount()->sum('amount');
-    //     }
-    //     return 0;
-    // }
-    // protected $appends = ['amount'];
+    public function getAmount2Attribute()
+    {
+        if($this->showamount()->count() > 0){
+            return $this->showamount()->sum('amount');
+        }
+        return 0;
+    }
     
 }

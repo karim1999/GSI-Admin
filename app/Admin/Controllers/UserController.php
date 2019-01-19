@@ -93,7 +93,6 @@ class UserController extends Controller
                 return "<span class='label label-warning'>Teacher</span>";
             }
         });
-        $grid->img('Image');
         $grid->phone('Phone');
         $grid->gender('Gender')->display(function ($gender) {
             if($gender == 1){
